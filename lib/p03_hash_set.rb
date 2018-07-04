@@ -8,13 +8,22 @@ class HashSet
     @count = 0
   end
 
-  def insert(key)
+  def insert(num)
+    hash = num.hash
+    @store[hash % @store.length].push(num)
+    @count += 1
+    resize! if @count == @store.length
   end
 
-  def include?(key)
+  def include?(num)
+    hash = num.hash
+    @store[hash % @store.length].include?(num)
   end
 
-  def remove(key)
+  def remove(num)
+    hash = num.hash
+    @store[hash % @store.length].delete(num)
+    @count -= 1
   end
 
   private
@@ -28,5 +37,16 @@ class HashSet
   end
 
   def resize!
+    items = []
+    new_array = Array.new(@store.length * 2) { Array.new }
+    @store.each do |el|
+      el.each do |el2|
+        items.push(el2) if el2 != nil
+      end 
+    end 
+    items.each do |el|
+      new_array[el % (@store.length * 2)].push(el)
+    end 
+    @store = new_array
   end
 end
